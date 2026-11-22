@@ -1,46 +1,45 @@
 # AI-USE
 
-This file records how AI tools were used in Assignment 2.
+Assignment 2 — DHG 502. This disclosure follows the course-wide submission rules.
 
-## Tools and models
+## 1. Tools and models used
 
-| Tool / model | Role |
-|---|---|
-| **HistFig** (local FastAPI + SQLite) | The RAG application used in the experiment |
-| **`z-ai/glm-5.3-flash`** via OpenRouter | Chat model for the conversations |
-| **`BAAI/bge-m3`** (local `sentence-transformers`, 1024 dimensions) | Embedding model used to rebuild the index |
-| **OpenCode** (AI assistant) | Environment setup, code and data handling, English language editing and translation, document formatting |
+- **OpenCode** (VS Code AI coding agent), model `opencode-go/deepseek-v4.1-flash`.
+- **HistFig** (local FastAPI + SQLite), the RAG application used in the experiment.
+- **`z-ai/glm-5.3-flash`** via OpenRouter, the chat model used for the conversations.
+- **`BAAI/bge-m3`** (local `sentence-transformers`, 1024 dimensions), the embedding model used to rebuild the index.
 
-## What the AI assistant did
+The chat model and the embedding model are part of the experiment. OpenCode is the coding and editing assistant. They are different tools and are reported separately.
 
-1. **Environment and code**
-   - Helped install HistFig and the local embedding stack (`uv sync --extra local`).
-   - Diagnosed the OpenRouter embedding endpoint's HTTP 404 and rebuilt the index with `BAAI/bge-m3`.
-   - Helped export the conversations as Markdown and assemble the error log.
+## 2. What the AI was used for
 
-2. **Data and metadata**
-   - Generated `corpus/manifest.csv` from the 54 corpus files (titles, authors, roles, voice status, character counts, source URLs, `used_in_index`).
-   - Generated `evidence/error_log.csv` from the exported conversations and the authors' verdicts.
-   - Corrected the part-number convention to the 1-based numbers in the HistFig exports.
+Coding, data handling, and language editing. The AI helped write and debug the Python scripts that exported the conversations, built `corpus/manifest.csv` and `evidence/error_log.csv`, checked part numbers, and generated the `.docx`. It also provided English language editing and translation for the authors' draft.
 
-3. **Language and formatting**
-   - Provided English language editing and translation for the authors' draft.
-   - Helped prepare the repository README and the corpus/evidence/system notes.
-   - Generated the `.docx` from the Markdown source with a standard-library script (A4, Times New Roman 12 pt, 1.5 spacing, one bordered settings table).
+The research question, the five core questions, the verdicts, and the argument were set by the authors. The authors wrote and revised the essay and approved the final text. The AI did not choose the questions, the verdicts, or the interpretation.
 
-## What the authors did
+## 3. Representative prompts / session excerpts
 
-- Selected the figure, the corpus, and the 22 excluded memoirs.
-- Designed the five core questions, the May Fourth check, and the simple/agent comparison.
-- Ran the HistFig conversations and inspected the retrieved passages.
-- Wrote and revised the essay, and checked every quotation and part number against `evidence/`.
-- Approved the final text and are responsible for every claim and citation.
+- "Parse the headers of the 54 corpus files and write `corpus/manifest.csv` with title, author, role, voice status, character counts, source URL, and `used_in_index`."
+- "Build `evidence/error_log.csv` from the exported conversations. One row per exchange, with question, mode, error type, what happened, sources, verdict, and error layer."
+- "Check every `part N` in the essay against the HistFig exports and list the mismatches. The exports are 1-based."
+- "Generate an A4 DOCX from the Markdown: Times New Roman 12 pt, 1.5 spacing, one bordered settings table."
+- "Read the five retrieved passages for the Zhu An question and confirm whether any of them actually supports the answer."
 
-The authors wrote and revised the essay. The AI assistant provided language editing and translation, and helped with code, data and formatting. The authors checked every quotation and part number against `evidence/` and approved the final text. Any remaining errors are the authors' responsibility.
+## 4. Important changes I made
 
-## Notes
+- Chose Lu Xun as the figure, the 32 volumes used for the index, and the 22 memoirs excluded from it.
+- Designed the five core questions, the May Fourth check, and the simple/agent comparison for the unemployment question.
+- Read the retrieved passages and set the verdicts, including the iron-house success, the Fujino partial success, and the Zhu An clear failure.
+- Corrected the part numbers from the earlier 0-based draft to the 1-based numbers in the HistFig exports.
+- Revised the essay at the sentence level, checked the argument, and approved the final text.
+- Checked the quotations against `evidence/` and checked the DOCX page count and word count before submission.
 
-- No API keys are stored in this repository. `system/config.example.toml` is key-free.
-- The Lu Xun texts are in the public domain in mainland China (life + 50 years). The 22 memoirs are included for course use; their copyright status varies by author.
-- Quotations from Chinese sources in the essay are English translations; the Chinese originals are in `evidence/`.
-- The experiment used a proprietary chat model and a locally rebuilt embedding index. The procedure is reproducible; exact outputs are not.
+## 5. How I checked the AI's output
+
+- Ran every script myself and read the output.
+- Checked `corpus/manifest.csv`: 54 rows, 32 volumes marked `used_in_index = yes`, 22 marked `no`; the 32 indexed files total 2,629,782 characters.
+- Checked `evidence/error_log.csv`: eight rows, with verdict and error layer filled for each exchange.
+- Checked every `part N` against the exported conversations: Fujino 40, Zhu An 158, the iron-house passage in *Nanqiang Beidiao Ji* 17, and the *Erxin Ji* noise passage 92.
+- Confirmed that `grep 朱安` returns 0 in the 32-volume corpus, read the five retrieved passages, and checked the Zhu An verdict against them.
+- Read the KWIC and retrieved passages against the source text and checked the quoted lines used in the essay.
+- Opened the final DOCX in Word: 1,905 words, 6 pages, one settings table. Checked the PDF as well, including the References section on page 6.
